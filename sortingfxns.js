@@ -108,12 +108,12 @@ function bucketSort(array, counter = 0){
   //find index for min and max
   let minIndex = 0;
   let maxIndex = 0;
-  for(let i = 1; i < array.length; i++){ //50 loops of 50 on average //100 + 98 + 96 + 94 + ... 50 ... + 2 + 0
+  for(let i = 1; i < array.length; i++){ //50 loops of 50 on average //102 + 100 + 98 + 96 + 94 + ... 50 ... + 2 + 0
     counter++;
     if(array[i] < array[minIndex]){
       minIndex = i;
     }
-    if(array[i] > array[maxIndex]){ //O(nlogn) > O(n) > O(logn)
+    if(array[i] > array[maxIndex]){ //O(nlogn) > O(n) > O(logn)  O(1/4n^2) n = 102 items
       maxIndex = i;
     }
   }
