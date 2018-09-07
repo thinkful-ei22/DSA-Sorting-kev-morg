@@ -6,7 +6,7 @@ const arr = [
   62, 93, 98 ,73, 28, 16, 46, 87 ,28, 65, 38, 67, 16, 85, 63, 23 ,
   69, 64, 91, 9 ,70 ,81, 27 ,97, 82, 6 ,88, 3,7 ,46, 13 ,11, 64, 76,
   31, 26, 38 ,28, 13 ,17,69 ,90, 1, 6 ,7, 64, 43 ,9, 73 ,80 ,98, 46 ,
-  27, 22, 87, 49, 83, 6 ,39, 42 ,51, 54, 84 ,34, 53 ,78, 40, 14, 5, 100, 102];
+  27, 22, 87, 49, 83, 6 ,39, 42 ,51, 54, 84 ,34, 53 ,78, 40, 14, 5];
 // console.log(arr.length);
 function swap(arr, i, x){
   //only when 2nd value is < 1st value
@@ -136,12 +136,84 @@ function bucketSort(array, counter = 0){
   return [minTemp, ...bucketSort(array, counter), maxTemp];
 }
 
+
+
+
+//This solution is best case O(n) and worst case O(n^2) if the array contains all repeats of the same number
+//On average, this is a better solution than the first solution
+//the first solution took 2601 operations, but this one took 616 for the long test array
+function bucketSort2(arr){ //example: [5, 2, 9, 10, 11]
+  let count = 0;
+  //find index of max and min
+  let minIndex = 0;
+  let maxIndex = 0;
+  let valueCount = {};
+  for(let i = 0; i < arr.length; i++){
+    count++;
+    //sets key:value pairs for valueCount
+    if(!valueCount[arr[i]]){
+      valueCount[arr[i]] = 1;
+    } else {
+      valueCount[arr[i]] = valueCount[arr[i]] + 1;
+    }
+
+    //used to find max and min indices
+    if(arr[i] < arr[minIndex]){
+      minIndex = i;
+    }
+    if(arr[i] > arr[maxIndex]){
+      maxIndex = i;
+    }
+  }
+
+  let mostRepeated = 1;
+  Object.keys(valueCount).forEach(value => {
+    count++;
+    if(valueCount[value] > mostRepeated){
+      mostRepeated = valueCount[value];
+    }
+  });
+
+  //create new array with length for each integer between the min and max
+  const bucketArr = [];
+  bucketArr.length = (arr[maxIndex] - arr[minIndex] + 1) * mostRepeated;
+
+  // available slots: [ |1, 1, 1|,  |2, 2, 2|,  |3, 3, 3|,..., |102, 102, 102|] (306 slots)
+  for(let i = 0; i < arr.length; i++){
+    count++;
+    let assignedSlot = (arr[i] - arr[minIndex]) * mostRepeated;
+    while(bucketArr[assignedSlot]){
+      count++;
+      assignedSlot = assignedSlot + 1;
+    }
+    bucketArr[assignedSlot] = arr[i];
+  }
+
+  //remove undefined from bucket array
+  let sortedArr = [];
+  for(let j = 0; j < bucketArr.length; j++){
+    count++;
+    if(bucketArr[j] !== undefined){
+      sortedArr.push(bucketArr[j]);
+    }
+  }
+
+  console.log(count);
+  return sortedArr;
+}
+
+
+
+
 function main(){
   // console.log(quickSort(arr));
   // console.log(arr.length);
   // console.log(mergeSort(arr));
   // console.log(bucketSort([1, 5, 2, 9, 10, 3]));
-  console.log(bucketSort(arr));
+  // console.log(bucketSort(arr));
+  // console.log(bucketSort2(arr));
+  console.log(bucketSort([1, 1, 2, 3, 4, 5]));
+  console.log(bucketSort2([1, 1, 2, 3, 4, 5]));
 }
 
 main();
